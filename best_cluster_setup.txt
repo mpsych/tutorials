@@ -1,0 +1,186 @@
+## The best cluster setup for Harvard Research Computing.
+
+**Requirements**
+- RC account (get it here https://portal.rc.fas.harvard.edu/request/account/new)
+
+**Summary**
+IMHO this is the best way of working on the Harvard Odyssey cluster. 
+It sets up a) a virtual environment with anaconda for python and all kinds of stuff, 
+b) a tunnel directly to a compute node so you can access jupyter there, and 
+c) a SSHFS link to a cluster folder so you edit files on your local machine. 
+
+
+
+##
+##
+##
+## Step 1: Setup Conda Environment
+##
+##
+##
+
+
+#
+# connect to login node
+#
+ssh haehn@odyssey.rc.fas.harvard.edu
+
+
+#
+# connect to compute machine w/ tunnel on 41235 (e.g. cox, holyseasgpu, seasdgx1)
+#
+# this also reserves 8 GB RAM and 1 GPU
+#
+srun --pty -t 7-12:00 --export=ALL --ntasks=1 -p cox --gres=gpu --tunnel=41235:41235 --mem=8000 /bin/bash
+
+#
+# load anaconda
+#
+module load Anaconda/5.0.1-fasrc01
+
+#
+# create new environment MITO
+#
+conda create --prefix /n/pfister_lab/haehn/ENVS/MITO python=2.7
+
+#
+# activate environment
+#
+source activate /n/pfister_lab/haehn/ENVS/MITO
+
+#
+# install jupter notebook
+#
+conda install jupyter
+
+#
+# IMPORTANT: CONFIGURE JUPYTER
+#
+vim ~/.jupyter/
+
+# store this in the file
+c.NotebookApp.ip = '0.0.0.0'
+c.NotebookApp.open_browser = False
+c.NotebookApp.password = u'' # HERE YOU NEED TO GENERATE ONE WITH from notebook.auth import passwd; passwd()
+c.NotebookApp.port = 41235
+# best also to activate SSL encryption! (google: jupyter ssl howto)
+
+#
+# END OF IMPORTANT
+# 
+
+#
+# install other standard packages for image processing and deep learning
+#
+conda install scikit-image scikit-learn keras tensorflow-gpu
+
+#
+# start tmux
+#
+tmux
+
+#
+# check commpute host name
+#
+uname -a
+Linux coxgpu06.rc.fas.harvard.edu ....
+
+#
+# go to github checkout
+#
+cd YOURCODE
+
+#
+# start jupyter notebook and let it run in tmux
+#
+jupyter notebook
+
+
+
+
+
+
+
+##
+##
+##
+## Step 2: Connect to Tunnel and allow access through your local IP (which means from everywhere if you have a public one)
+##
+##
+##
+##
+
+#
+#
+# NOW AT YOUR LOCAL MACHINE
+# 
+#
+
+#
+# start tmux
+#
+tmux
+
+#
+# connect 
+#
+ssh -g -L 0.0.0.0:41235:localhost:41235 haehn@odyssey.rc.fas.harvard.edu
+ssh -L 41235:localhost:41235 coxgpu06
+
+#
+# and leave it open
+#
+
+#
+# now you can connect to http://YOURIP:41235/
+#
+# please make sure jupyter notebook has SSL activated and a password set
+#
+
+
+
+##
+##
+##
+## Step 3: Link a cluster folder locally using SSHFS
+##
+##
+##
+##
+
+# make mount point
+mkdir CLUSTERFOLDER
+
+ssh -f haehn@odyssey.rc.fas.harvard.edu -L 2233:0.0.0.0:22 -N
+sshfs -p 2233 haehn@127.0.0.1:/n/home05/haehn/Projects/CP CLUSTERFOLDER
+
+#
+# and all the cluster files can be edited now in your local editor
+#
+
+#########################################
+
+
+
+
+
+
+##########################################
+#
+# LATER, if you want to use an already existing conda environment on the cluster:
+#
+module load Anaconda/5.0.1-fasrc01
+source activate /n/pfister_lab/haehn/ENVS/MITO
+
+# always tmux
+tmux
+
+##########################################
+
+made with <3, any questions: let me know, Daniel Haehn <haehn@seas.harvard.edu>
+
+
+
+
+
+
