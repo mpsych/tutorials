@@ -1,10 +1,10 @@
-## The best cluster setup for Harvard Research Computing.
+## The best cluster setup for the UMass Boston Gibbs Cluster.
 
 **Requirements**
-- RC account (get it here https://portal.rc.fas.harvard.edu/request/account/new)
+- You need an account. Get it here: https://www.umb.edu/rc/hpc/gibbs
 
 **Summary**
-IMHO this is the best way of working on the Harvard Odyssey cluster. 
+IMHO this is the best way of working on the Gibbs cluster. 
 It sets up a) a virtual environment with anaconda for python and all kinds of stuff, 
 b) a tunnel directly to a compute node so you can access jupyter there, and 
 c) a SSHFS link to a cluster folder so you edit files on your local machine. 
@@ -14,56 +14,68 @@ c) a SSHFS link to a cluster folder so you edit files on your local machine.
 ##
 ##
 ##
-## Step 1: Setup Conda Environment
+## Step 1: Setup Conda Environment and Jupyter
 ##
 ##
 ##
+
+#
+# connect to vpn using the client from http://vpn.umb.edu
+#
 
 
 #
 # connect to login node
 #
-ssh haehn@odyssey.rc.fas.harvard.edu
+ssh USERNAME@gibbs.umb.edu
 
 
 #
-# connect to compute machine w/ tunnel on 41235 (e.g. cox, holyseasgpu, seasdgx1)
+# connect to compute machine (e.g. GTX670, K20, TITAN, K80...) see https://www.umb.edu/rc/hpc/gibbs for options
+# the partitions are named after the GPUs
 #
-# this also reserves 8 GB RAM and 1 GPU
+# this also reserves 16 GB RAM and 1 GPU
 #
-srun --pty -t 7-12:00 --export=ALL --ntasks=1 -p cox --gres=gpu --tunnel=41235:41235 --mem=8000 /bin/bash
+srun --pty -t 7-12:00 --export=ALL --ntasks=1 -p K80 --gres=gpu --mem=16000 /bin/bash
 
 #
 # load anaconda
 #
-module load Anaconda/5.0.1-fasrc01
+module load python/anaconda3.7
 
 #
-# create new environment MITO
+# create new environment PYTORCH
 #
-conda create --prefix /n/pfister_lab/haehn/ENVS/MITO python=2.7
+conda create --name PYTORCH python=3.6
+
+#
+# here i had to logout and login to make activating the environment work
+#
 
 #
 # activate environment
 #
-source activate /n/pfister_lab/haehn/ENVS/MITO
+conda activate PYTORCH
 
 #
 # install jupter notebook
 #
 conda install jupyter
 
+# generate a jupyter notebook config file
+jupyter notebook --generate-config
+
 #
 # IMPORTANT: CONFIGURE JUPYTER
 #
-vim ~/.jupyter/
+vi ~/.jupyter/jupyter_notebook_config.py
 
 # store this in the file
 c.NotebookApp.ip = '0.0.0.0'
 c.NotebookApp.open_browser = False
 c.NotebookApp.password = u'' # HERE YOU NEED TO GENERATE ONE WITH from notebook.auth import passwd; passwd()
 c.NotebookApp.port = 41235
-# best also to activate SSL encryption! (google: jupyter ssl howto)
+# best also to activate SSL encryption! (look here: https://testnb.readthedocs.io/en/stable/examples/Notebook/Configuring%20the%20Notebook%20and%20Server.html)
 
 #
 # END OF IMPORTANT
@@ -72,7 +84,7 @@ c.NotebookApp.port = 41235
 #
 # install other standard packages for image processing and deep learning
 #
-conda install scikit-image scikit-learn keras tensorflow-gpu
+conda install scikit-image scikit-learn pytorch
 
 #
 # start tmux
@@ -83,10 +95,10 @@ tmux
 # check commpute host name
 #
 uname -a
-Linux coxgpu06.rc.fas.harvard.edu ....
+Linux gibs11 ....
 
 #
-# go to github checkout
+# go to github checkout (cloning at this point from github only works with HTTPS)
 #
 cd YOURCODE
 
@@ -149,10 +161,11 @@ ssh -L 41235:localhost:41235 coxgpu06
 ##
 
 # make mount point
-mkdir CLUSTERFOLDER
+mkdir compute_cluster
 
 ssh -f haehn@odyssey.rc.fas.harvard.edu -L 2233:0.0.0.0:22 -N
-sshfs -p 2233 haehn@127.0.0.1:/n/home05/haehn/Projects/CP CLUSTERFOLDER
+sshfs -p 2233 haehn@127.0.0.1:/home/USERNAME/Projects/compute compute_cluster
+# above assumes your github check out is compute in your Projects folder
 
 #
 # and all the cluster files can be edited now in your local editor
@@ -169,15 +182,15 @@ sshfs -p 2233 haehn@127.0.0.1:/n/home05/haehn/Projects/CP CLUSTERFOLDER
 #
 # LATER, if you want to use an already existing conda environment on the cluster:
 #
-module load Anaconda/5.0.1-fasrc01
-source activate /n/pfister_lab/haehn/ENVS/MITO
+module load python/anaconda3.7
+conda activate PYTORCH
 
 # always tmux
 tmux
 
 ##########################################
 
-made with <3, any questions: let me know, Daniel Haehn <haehn@seas.harvard.edu>
+made with <3, any questions: let me know, Daniel Haehn <haehn@cs.umb.edu>
 
 
 
