@@ -93,10 +93,15 @@ conda install -c conda-forge tmux
 tmux
 
 #
+#
+#
+conda activate PYTORCH
+
+#
 # check commpute host name
 #
 uname -a
-Linux gibs11 ....
+Linux gibs11.gibbs.local
 
 #
 # go to github checkout (cloning at this point from github only works with HTTPS)
@@ -137,18 +142,19 @@ tmux
 #
 # connect 
 #
-ssh -g -L 0.0.0.0:41235:localhost:41235 haehn@odyssey.rc.fas.harvard.edu
-ssh -L 41235:localhost:41235 coxgpu06
+ssh USERNAME@gibbs.umb.edu -L 8002:0.0.0.0:8001 ssh USERNAME@gibbs.umb.edu -L 8001:localhost:41235
 
 #
 # and leave it open
 #
 
 #
-# now you can connect to http://YOURIP:41235/
-#
+# now you can connect to http://YOUR_IP:8002/
+# if you want to connect locally, you can use 127.0.0.1 or localhost for YOUR_IP
 # please make sure jupyter notebook has SSL activated and a password set
 #
+
+# Now, you have a jupyter instance running where code gets executed on gibbs! How cool is that!!
 
 
 
@@ -157,16 +163,17 @@ ssh -L 41235:localhost:41235 coxgpu06
 ##
 ## Step 3: Link a cluster folder locally using SSHFS
 ##
-##
+## This allows you to edit cluster files from your local machine!
 ##
 ##
 
 # make mount point
 mkdir compute_cluster
 
-ssh -f haehn@odyssey.rc.fas.harvard.edu -L 2233:0.0.0.0:22 -N
-sshfs -p 2233 haehn@127.0.0.1:/home/USERNAME/Projects/compute compute_cluster
+ssh -f USERNAME@odyssey.rc.fas.harvard.edu -L 2233:0.0.0.0:22 -N
+sshfs -p 2233 USERNAME@127.0.0.1:/home/USERNAME/Projects/compute compute_cluster
 # above assumes your github check out is compute in your Projects folder
+# USERNAME is of course your gibbs username
 
 #
 # and all the cluster files can be edited now in your local editor
