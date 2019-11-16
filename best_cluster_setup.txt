@@ -87,8 +87,9 @@ c.NotebookApp.port = 41235
 conda install scikit-image scikit-learn pytorch
 
 #
-# start tmux
+# install and start tmux
 #
+conda install -c conda-forge tmux
 tmux
 
 #
