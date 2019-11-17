@@ -182,8 +182,13 @@ sshfs -p 2233 USERNAME@127.0.0.1:/home/USERNAME/Projects/compute compute_cluster
 #########################################
 
 
-
-
+#########################################
+#
+# if you loose the VPN connection, just re-connect
+# and re-run step 3
+# the jupyter notebook should be still running on the cluster because of tmux
+#
+##########################################
 
 
 ##########################################
