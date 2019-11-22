@@ -44,6 +44,13 @@ srun --pty -t 7-12:00 --export=ALL --ntasks=1 -p K80 --gres=gpu --mem=16000 /bin
 module load python/anaconda3.7
 
 #
+# make sure we have the latest cuda!!
+#
+# this needs to happen all the time! IMPORTANT!!!
+#
+module load cuda/10.1
+
+#
 # create new environment PYTORCH
 #
 conda create --name PYTORCH python=3.6
