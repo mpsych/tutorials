@@ -170,7 +170,7 @@ ssh USERNAME@gibbs.umb.edu -L 8002:0.0.0.0:8001 ssh USERNAME@gibbs.umb.edu -L 80
 # make mount point
 mkdir compute_cluster
 
-ssh -f USERNAME@odyssey.rc.fas.harvard.edu -L 2233:0.0.0.0:22 -N
+ssh -f USERNAME@gibbs.umb.edu -L 2233:0.0.0.0:22 -N
 sshfs -p 2233 USERNAME@127.0.0.1:/home/USERNAME/Projects/compute compute_cluster
 # above assumes your github check out is compute in your Projects folder
 # USERNAME is of course your gibbs username
