@@ -1,0 +1,31 @@
+#
+# this tunnels through HOST1 to a not directly reachable HOST2
+#
+ssh XXX@HOST1
+
+# then from there connect to HOST2
+ssh XXX@HOST2
+
+# use tmux and activate your conda env
+tmux
+conda activate XXX
+
+#
+# configure jupyter notebook
+#
+jupyter notebook --generate-config
+vi ~/.jupyter/jupyter_notebook_config.py
+# add the following
+c.NotebookApp.ip = '0.0.0.0'
+c.NotebookApp.open_browser = False
+c.NotebookApp.port = 44441
+
+# start jupyter notebook
+jupyter notebook
+
+
+# now in a different terminal on your local machine
+ssh -L 44441:HOST2:44441 XXX@HOST1 -N
+
+# then you can access the jupyter notebook
+http://localhost:44441
