@@ -1,3 +1,7 @@
 from tensorflow.python.client import device_lib
 
 device_lib.list_local_devices()
+
+
+# select gpus using os.environ["CUDA_VISIBLE_DEVICES"]="1"
+# or export CUDA_VISIBLE_DEVICES=1 && python script.py
