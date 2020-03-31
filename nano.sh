@@ -27,7 +27,7 @@ cd cmake-3.13.0/
 ./bootstrap --system-curl
 make -j8
 
-echo 'export PATH=~/Scratch/cmake-3.13.0/bin/:$PATH' >> ~/.bashrc
+echo 'export PATH=$HOME/Scratch/cmake-3.13.0/bin/:$PATH' >> ~/.bashrc
 source ~/.bashrc
 
 # 
@@ -44,13 +44,18 @@ rm get-pip.py
 
 sudo pip install virtualenv virtualenvwrapper
 
-vim ~/.bashrc
+# INTERACTIVE
+# vim ~/.bashrc
 
-# virtualenv and virtualenvwrapper
-export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-source /usr/local/bin/virtualenvwrapper.sh
+# # virtualenv and virtualenvwrapper
+# export WORKON_HOME=$HOME/.virtualenvs
+# export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+# source /usr/local/bin/virtualenvwrapper.sh
 
+# AUTOMATIC
+echo 'export WORKON_HOME=$HOME/.virtualenvs' >> ~/.bashrc
+echo 'export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3' >> ~/.bashrc
+echo 'source /usr/local/bin/virtualenvwrapper.sh' >> ~/.bashrc
 
 source ~/.bashrc 
 
@@ -106,14 +111,13 @@ protoc object_detection/protos/*.proto --python_out=.
 #
 # Re-usable script
 #
-vim ~/setup.sh
+# vim ~/setup.sh
 
 # add this content:
 #
 
-#!/bin/sh
-export PYTHONPATH=$PYTHONPATH:/home/`whoami`/Scratch/models/research:\
-/home/`whoami`/Scratch/models/research/slim
+echo '#!/bin/sh' >> ~/setup.sh
+echo 'export PYTHONPATH=$PYTHONPATH:$HOME/Scratch/models/research:$HOME/Scratch/models/research/slim' >> ~/setup.sh
 
 #
 # tf_trt_models
