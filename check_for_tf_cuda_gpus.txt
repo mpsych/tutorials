@@ -5,3 +5,10 @@ device_lib.list_local_devices()
 
 # select gpus using os.environ["CUDA_VISIBLE_DEVICES"]="1"
 # or export CUDA_VISIBLE_DEVICES=1 && python script.py
+
+
+# Additional method to test for gpus and tensorflow
+'''
+import tensorflow
+print( 'GPU available', tf.config.list_physical_devices('GPU') )
+```
