@@ -1,4 +1,6 @@
-conda create --name CTF25 python=3.9.7
+conda create --name TF25 python=3.9.7
+
+conda activate TF25
 
 conda install -c conda-forge cudatoolkit=11.3.1=h2bc3f7f_2
 
@@ -10,3 +12,8 @@ pip install keras==2.5.0rc0
 
 conda install jupyter
 
+
+#
+# NOTE: this should be the base for any custom changes
+# conda create --name CTF25 --clone TF25
+#
