@@ -1,0 +1,12 @@
+conda create --name CTF25 python=3.9.7
+
+conda install -c conda-forge cudatoolkit=11.3.1=h2bc3f7f_2
+
+conda install -c conda-forge cudnn=8.2.1.32=h86fa8c9_0
+
+pip install tensorflow==2.5.0
+
+pip install keras==2.5.0rc0
+
+conda install jupyter
+
