@@ -1,3 +1,56 @@
+Here is the good setup for chimera
+
+BEST SETUP is with ssh passwordless login through 2-hop tunnel via gonzo (you need a gonzo account and an RC account)
+
+1. login to chimera
+
+ssh -tt UMBUSER@gonzo.verymad.net ssh -tt UMBUSER@chimera.umb.edu
+
+2. start tmux on chimera head
+
+tmux
+
+3. connect to chimera12 or 13
+
+srun --pty --ntasks=2 -p haehn -q haehn_unlim --gres=gpu:A100:1 --mem=128G -w chimera12 -t 2-24 /bin/bash
+
+4. launch jupyter notebook --port YOURPORT
+
+5. create a new tunnel
+
+HOST=chimera12 PORT=YOURPORT && ssh UMBUSER@gonzo.verymad.net -L $PORT:*:$PORT ssh UMBUSER@chimera.umb.edu -L $PORT:$HOST:$PORT -N
+
+6. map homefolder via sshfs
+
+PORT=ANOTHERPORT && ssh -f UMBUSER@gonzo.verymad.net -L $PORT:*:$PORT ssh -f UMBUSER@chimera.umb.edu -L $PORT:*:22 -N
+
+sshfs -p $PORT UMBUSER@localhost:~ chimera
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WARNING OUTDATED::::
+
+
 ## The best cluster setup for the UMass Boston Gibbs Cluster.
 
 **Requirements**
