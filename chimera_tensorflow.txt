@@ -1,0 +1,68 @@
+###
+### BOTH ENVS BELOW VERIFIED 3/12 on CHIMERA13
+###
+
+#
+# Tensorflow 2.5
+# using CUDA 11
+#
+conda create --name TF25 python=3.10
+conda install cudatoolkit=11.8.0=h6a678d5_0
+conda install cudnn=8.9.2.26=cuda11_0
+pip install tensorflow==2.5
+
+### TEST
+python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+
+
+###################################################################################
+
+
+#
+# Tensorflow 2.19
+# with locally installed CUDA 12.2
+#
+conda create --name TF219 python=3.10
+conda install nvidia/label/cuda-12.2.0::cuda-toolkit -c nvidia/label/cuda-12.2.0
+conda install cudnn
+pip install tensorflow==2.19
+
+export PATH=$CONDA_PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+export CUDA_HOME=$CONDA_PREFIX
+
+### TEST (warnings are ok!)
+python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+
+
+###################################################################################
+#
+# REAL PERFORMANCE TEST
+# this should yield like 25s vs 0.5s performance difference
+#
+
+import tensorflow as tf
+import time
+
+# Create a large matrix
+size = 10000
+a = tf.random.normal((size, size))
+b = tf.random.normal((size, size))
+
+# Measure time on CPU
+with tf.device('/CPU:0'):
+    start = time.time()
+    c_cpu = tf.matmul(a, b)
+    end = time.time()
+    print(f"CPU Time: {end - start:.3f} seconds")
+
+# Measure time on GPU
+with tf.device('/GPU:0'):
+    start = time.time()
+    c_gpu = tf.matmul(a, b)
+    end = time.time()
+    print(f"GPU Time: {end - start:.3f} seconds")
+
+
+
+
