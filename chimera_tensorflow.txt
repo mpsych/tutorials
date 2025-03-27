@@ -35,6 +35,22 @@ export CUDA_HOME=$CONDA_PREFIX
 python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 
 
+#### H200 setup
+conda create --name H200 python=3.10
+conda install nvidia/label/cuda-12.4.0::cuda-toolkit -c nvidia/label/cuda-12.4.0
+conda install cudnn
+pip install tensorflow==2.19
+
+export PATH=$CONDA_PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+export CUDA_HOME=$CONDA_PREFIX
+
+### TEST (warnings are ok!)
+python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+# gives [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')]
+
+
+
 ###################################################################################
 #
 # REAL PERFORMANCE TEST
